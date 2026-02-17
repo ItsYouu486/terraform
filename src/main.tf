@@ -11,14 +11,14 @@ module "network" {
 
 # 2. Appel du module Instances (Compute)
 module "compute" {
-  source             = "../modules/instance" # Chemin vers ton dossier instance
-  
+  source = "../modules/instance" # Chemin vers ton dossier instance
+
   # C'EST ICI QUE LE CABLAGE SE FAIT :
   # On donne au module instance les IDs générés par le module network
-  subnet_a_id        = module.network.subnet_a_id
-  subnet_b_id        = module.network.subnet_b_id
-  security_group_id  = module.network.instance_sg_id
-  
+  subnet_a_id       = module.network.subnet_a_id
+  subnet_b_id       = module.network.subnet_b_id
+  security_group_id = module.network.instance_sg_id
+
   # Variables de configuration
   instance_a_name    = "web-srv-a"
   instance_b_name    = "web-srv-b"
