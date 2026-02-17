@@ -24,12 +24,14 @@ jobs:
 
       - name: Terraform init (no backend)
         run: terraform init -backend=false
+        working-directory: ./src # On lance l'init là où est ton main principal
 
       - name: Terraform validate
         run: terraform validate
+        working-directory: ./src
 
       - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v6
+        uses: terraform-linters/setup-tflint@v4 # Version plus stable
         with:
           tflint_version: latest
 
@@ -37,9 +39,12 @@ jobs:
         run: tflint --init
 
       - name: TFLint run
-        run: tflint -f compact
+        run: tflint -r # -r pour récursif, scanne les modules
 
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1
+      # REMPLACEMENT DE TFSEC PAR CHECKOV
+      - name: Checkov Security Scan
+        uses: bridgecrewio/checkov-action@master
         with:
-          additional_args: --soft-fail
+          directory: . # Scanne tout le projet (src et modules)
+          framework: terraform
+          soft_fail: true # Permet de voir les erreurs sans bloquer la suite
